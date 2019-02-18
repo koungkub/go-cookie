@@ -4,10 +4,19 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://web.smartfishermans.com"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPost},
+		AllowCredentials: true,
+	}))
+
 	e.GET("/cookie", func(c echo.Context) error {
 		cookie := new(http.Cookie)
 		cookie.Name = "thisiscookie"
@@ -42,5 +51,6 @@ func main() {
 			"delete": true,
 		})
 	})
+
 	e.Logger.Fatal(e.Start(":3000"))
 }
